@@ -1,0 +1,196 @@
+#! /usr/bin/env bash
+
+#########################################################################
+#									#
+# Script ID: .pbuilderrc						#
+# Author: Copyright (C) 2018-2019  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0					#
+#									#
+# Purpose:								#
+# This pbuilderrc file sets up pbuilder to be able to build for OS's,	#
+# distributions and architectures. These values should be passed on the	#
+# command line. E.g.							#
+#	sudo OS=raspbian DIST=stretch ARCH=armhf pbuilder create \	#
+#			--override-config				#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Changelog								#
+#									#
+# Date		Author	Version	Description				#
+#									#
+# 22/02/2018	MG	1.0.1	Created.				#
+# 17/05/2018	MG	1.0.2	Add staging component.			#
+#				Add AUTOCLEANAPTCACHE=yes which does an	#
+#				apt-get autoclean on the cache.		#
+# 19/10/2018	MG	1.0.3	Add Bintray to OTHERMIRROR.		#
+# 04/02/2019	MG	1.0.4	Update OTHERMIRROR for new source	#
+#				tarball repo on hermes.			#
+#				Add vim as an extra package.		#
+# 29/07/2019	MG	1.0.5	Use OS and DIST in OTHERMIRROR.		#
+#				Correct example create CL above.	#
+#				Add security & updates to OTHERMIRROR.	#
+#				Remove Ubuntu as not maintained and	#
+#				possibly misleading.			#
+#				Correct Purpose section above.		#
+#				Do not set OTHERMIRROR when creating	#
+#				the archive as it will fail due to	#
+#				missing keys.				#
+#									#
+#########################################################################
+
+
+#############################
+# Exit immediately on error #
+#############################
+set -e
+
+
+########################################################
+# OTHERMIRROR may be added to later so initialise here #
+########################################################
+if [[ $PBUILDER_OPERATION != create ]]; then
+	OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$OS $DIST "
+	OTHERMIRROR+="beta stable staging"
+	APTKEYRINGS=("/var/cache/pbuilder/keyrings/hermes.gpg")
+fi
+
+
+########################
+# OS specific settings #
+########################
+case $OS in
+debian)
+	MIRRORSITE="https://deb.debian.org/debian/"
+	COMPONENTS="main contrib non-free"
+	if [[ $PBUILDER_OPERATION != create ]]; then
+		OTHERMIRROR+="|deb https://dl.bintray.com/mgrantprg/utils "
+		OTHERMIRROR+="$DIST stable"
+		OTHERMIRROR+="|deb https://deb.debian.org/debian-security/ "
+		OTHERMIRROR+="$DIST/updates main contrib non-free"
+		OTHERMIRROR+="|deb https://deb.debian.org/debian $DIST-updates "
+		OTHERMIRROR+="main contrib non-free"
+	fi
+	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
+		"--keyring=/usr/share/keyrings/debian-archive-keyring.gpg")
+	;;
+raspbian)
+	MIRRORSITE="http://mirrordirector.raspbian.org/raspbian/"
+	COMPONENTS="main contrib non-free rpi"
+	if [[ $PBUILDER_OPERATION != create ]]; then
+		case $DIST in
+		stretch)
+			OTHERMIRROR+="|deb http://download.opensuse.org"
+			OTHERMIRROR+="/repositories"
+			OTHERMIRROR+="/home:/m-grant-prg/Raspbian_9.0/ /"
+			;;
+		buster)
+			OTHERMIRROR+="|deb http://download.opensuse.org"
+			OTHERMIRROR+="/repositories"
+			OTHERMIRROR+="/home:/m-grant-prg/Raspbian_10/ /"
+			;;
+		*)
+			echo "Unknown DIST: $DIST"
+			exit 1
+			;;
+		esac
+		OTHERMIRROR+="|deb http://raspbian.raspberrypi.org/raspbian/ "
+		OTHERMIRROR+="$DIST main contrib non-free rpi"
+		OTHERMIRROR+="|deb http://archive.raspberrypi.org/debian/ "
+		OTHERMIRROR+="$DIST main ui"
+	fi
+	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
+		"--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg")
+	;;
+*)
+	echo "Unknown OS: $OS"
+	exit 1
+	;;
+esac
+
+
+##############################################
+# Check we now have a value of DIST and ARCH #
+##############################################
+if [ "$DIST" == "" ]; then
+	echo "DIST is not set"
+	exit 1
+fi
+
+if [ "$ARCH" == "" ]; then
+	echo "ARCH is not set"
+	exit 1
+fi
+
+
+#####################################################
+# We always need these packages in the base tarball #
+#####################################################
+EXTRAPACKAGES+=" dirmngr gnupg2 software-properties-common vim wget"
+
+
+###################################
+# Deal with potential cross-build #
+###################################
+if [ "$ARCH" == "armel" ] && [ "$(dpkg --print-architecture)" != "armel" ]; then
+    DEBOOTSTRAP="qemu-debootstrap"
+fi
+if [ "$ARCH" == "armhf" ] && [ "$(dpkg --print-architecture)" != "armhf" ]; then
+    DEBOOTSTRAP="qemu-debootstrap"
+fi
+
+
+########################
+# Add the Architecture #
+########################
+DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}" "--arch=$ARCH")
+
+
+####################
+# Self explanatory #
+####################
+BASETGZ="/var/cache/pbuilder/$OS-$DIST-$ARCH-base.tgz"
+
+DISTRIBUTION="$DIST"
+
+PBUILDERSATISFYDEPENDSCMD=/usr/lib/pbuilder/pbuilder-satisfydepends-apt
+
+BUILDRESULT="/home/mgrantprg/SWDev/pbuilder/$OS-$DIST-$ARCH-result/"
+
+APTCACHE="/var/cache/pbuilder/aptcache/$OS-$DIST-$ARCH/"
+
+AUTOCLEANAPTCACHE=yes
+
+
+##########################################################################
+# Hook scripts are executed during chroot setup, before packaging begins #
+##########################################################################
+HOOKDIR="/home/mgrantprg/SWDev/pbuilder/hook.d/"
+
+
+#####################
+# Now log the setup #
+#####################
+psetuplog="$BUILDRESULT""pbuilderrc-setup.log"
+
+echo "OS = $OS" > $psetuplog
+echo "Distribution = $DIST" >> $psetuplog
+echo "Arch = $ARCH" >> $psetuplog
+echo "Mirrorsite = $MIRRORSITE" >> $psetuplog
+echo "Components = $COMPONENTS" >> $psetuplog
+echo "Debootstrapopts = $DEBOOTSTRAPOPTS" >> $psetuplog
+echo "Othermirror = $OTHERMIRROR" >> $psetuplog
+echo "Aptkeyrings = $APTKEYRINGS" >> $psetuplog
+echo "Extrapackages = $EXTRAPACKAGES" >> $psetuplog
+echo "Debootstrap = $DEBOOTSTRAP" >> $psetuplog
+echo "Debootstrapopts = $DEBOOTSTRAPOPTS" >> $psetuplog
+echo "Basetgz = $BASETGZ" >> $psetuplog
+echo "Pbuildersatisfydependscmd = $PBUILDERSATISFYDEPENDSCMD" >> $psetuplog
+echo "Buildresult = $BUILDRESULT" >> $psetuplog
+echo "Aptcache = $APTCACHE" >> $psetuplog
+echo "Hookdir = $HOOKDIR" >> $psetuplog
+

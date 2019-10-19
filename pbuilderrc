@@ -40,6 +40,8 @@
 #				Do not set OTHERMIRROR when creating	#
 #				the archive as it will fail due to	#
 #				missing keys.				#
+# 19/10/2019	MG	1.0.6	Change Bintray Debian repo name. Change	#
+#				Raspbian to use Bintray.		#
 #									#
 #########################################################################
 
@@ -68,8 +70,8 @@ debian)
 	MIRRORSITE="https://deb.debian.org/debian/"
 	COMPONENTS="main contrib non-free"
 	if [[ $PBUILDER_OPERATION != create ]]; then
-		OTHERMIRROR+="|deb https://dl.bintray.com/mgrantprg/utils "
-		OTHERMIRROR+="$DIST stable"
+		OTHERMIRROR+="|deb https://dl.bintray.com/mgrantprg/"
+		OTHERMIRROR+="debian-utils $DIST stable"
 		OTHERMIRROR+="|deb https://deb.debian.org/debian-security/ "
 		OTHERMIRROR+="$DIST/updates main contrib non-free"
 		OTHERMIRROR+="|deb https://deb.debian.org/debian $DIST-updates "
@@ -82,22 +84,8 @@ raspbian)
 	MIRRORSITE="http://mirrordirector.raspbian.org/raspbian/"
 	COMPONENTS="main contrib non-free rpi"
 	if [[ $PBUILDER_OPERATION != create ]]; then
-		case $DIST in
-		stretch)
-			OTHERMIRROR+="|deb http://download.opensuse.org"
-			OTHERMIRROR+="/repositories"
-			OTHERMIRROR+="/home:/m-grant-prg/Raspbian_9.0/ /"
-			;;
-		buster)
-			OTHERMIRROR+="|deb http://download.opensuse.org"
-			OTHERMIRROR+="/repositories"
-			OTHERMIRROR+="/home:/m-grant-prg/Raspbian_10/ /"
-			;;
-		*)
-			echo "Unknown DIST: $DIST"
-			exit 1
-			;;
-		esac
+		OTHERMIRROR+="|deb https://dl.bintray.com/mgrantprg/"
+		OTHERMIRROR+="raspbian-utils $DIST stable"
 		OTHERMIRROR+="|deb http://raspbian.raspberrypi.org/raspbian/ "
 		OTHERMIRROR+="$DIST main contrib non-free rpi"
 		OTHERMIRROR+="|deb http://archive.raspberrypi.org/debian/ "

@@ -3,7 +3,7 @@
 #########################################################################
 #									#
 # Script ID: .pbuilderrc						#
-# Author: Copyright (C) 2018-2019  Mark Grant				#
+# Author: Copyright (C) 2018-2020  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -44,6 +44,8 @@
 # 10/11/2019	MG	1.0.7	Change example CL invocation above to	#
 #				remove unnecessary --override-config.	#
 #				Add support for Ubuntu.			#
+# 23/02/2020	MG	1.1.0	Add support for apt-cacher-ng.		#
+#				Tidy up MIRRORSITE & OTHERMIRRORS.	#
 #									#
 #########################################################################
 
@@ -54,17 +56,46 @@
 set -e
 
 
+##################
+# Init variables #
+##################
+OTHERMIRROR=""
+
+
+#########################################################################
+# Determine the start of the apt list line as it is different depending	#
+# on whether apt-cacher-ng is available.				#
+#########################################################################
+if [[ $APT_CACHER == "" ]]; then
+	APT_CACHER=yes
+fi
+
+# APT_CACHER == yes implies that not only the cache is available but also the
+# local repository. A no implies the opposite.
+case $APT_CACHER in
+yes)
+	http_prefix="http://hermes.mgent.home:3142"
+	https_prefix="http://hermes.mgent.home:3142/HTTPS//"
+	;;
+no)
+	http_prefix="http:/"
+	https_prefix="https:/"
+	;;
+*)
+	echo "Unknown APT_CACHER value: $APT_CACHER"
+	exit 1
+	;;
+esac
+
+
 ########################################################
 # OTHERMIRROR may be added to later so initialise here #
 ########################################################
-if [[ $PBUILDER_OPERATION != create ]]; then
-	if [[ $OS == ubuntu ]]; then
-		OTHERMIRROR=""
-	else
-		OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$OS $DIST "
-		OTHERMIRROR+="beta stable staging"
-		APTKEYRINGS=("/var/cache/pbuilder/keyrings/hermes.gpg")
-	fi
+if [[ $PBUILDER_OPERATION != create && $APT_CACHER == yes \
+	&& $OS != ubuntu ]]; then
+	OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$OS $DIST "
+	OTHERMIRROR+="beta stable staging"
+	APTKEYRINGS=("/var/cache/pbuilder/keyrings/hermes.gpg")
 fi
 
 
@@ -73,41 +104,50 @@ fi
 ########################
 case $OS in
 debian)
-	MIRRORSITE="https://deb.debian.org/debian/"
+	MIRRORSITE="$https_prefix/deb.debian.org/debian/"
 	COMPONENTS="main contrib non-free"
 	if [[ $PBUILDER_OPERATION != create ]]; then
-		OTHERMIRROR+="|deb https://dl.bintray.com/mgrantprg/"
+		if [[ $OTHERMIRROR != "" ]]; then
+			OTHERMIRROR+="|"
+		fi
+		OTHERMIRROR+="deb $https_prefix/dl.bintray.com/mgrantprg/"
 		OTHERMIRROR+="debian-utils $DIST stable"
-		OTHERMIRROR+="|deb https://deb.debian.org/debian-security/ "
-		OTHERMIRROR+="$DIST/updates main contrib non-free"
-		OTHERMIRROR+="|deb https://deb.debian.org/debian $DIST-updates "
+		OTHERMIRROR+="|deb $https_prefix/deb.debian.org/"
+		OTHERMIRROR+="debian-security/ $DIST/updates "
+		OTHERMIRROR+="main contrib non-free"
+		OTHERMIRROR+="|deb $https_prefix/deb.debian.org/debian "
+		OTHERMIRROR+="$DIST-updates "
 		OTHERMIRROR+="main contrib non-free"
 	fi
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
 		"--keyring=/usr/share/keyrings/debian-archive-keyring.gpg")
 	;;
 raspbian)
-	MIRRORSITE="http://mirrordirector.raspbian.org/raspbian/"
+	MIRRORSITE="$http_prefix/mirrordirector.raspbian.org/raspbian/"
 	COMPONENTS="main contrib non-free rpi"
 	if [[ $PBUILDER_OPERATION != create ]]; then
-		OTHERMIRROR+="|deb https://dl.bintray.com/mgrantprg/"
+		if [[ $OTHERMIRROR != "" ]]; then
+			OTHERMIRROR+="|"
+		fi
+		OTHERMIRROR+="deb $https_prefix/dl.bintray.com/mgrantprg/"
 		OTHERMIRROR+="raspbian-utils $DIST stable"
-		OTHERMIRROR+="|deb http://raspbian.raspberrypi.org/raspbian/ "
-		OTHERMIRROR+="$DIST main contrib non-free rpi"
-		OTHERMIRROR+="|deb http://archive.raspberrypi.org/debian/ "
-		OTHERMIRROR+="$DIST main ui"
+		OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.org/"
+		OTHERMIRROR+="debian/ $DIST main ui"
 	fi
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
 		"--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg")
 	;;
 ubuntu)
-	MIRRORSITE="http://uk.archive.ubuntu.com/ubuntu/"
+	MIRRORSITE="$http_prefix/uk.archive.ubuntu.com/ubuntu/"
 	COMPONENTS="main restricted universe multiverse"
 	if [[ $PBUILDER_OPERATION != create ]]; then
-		OTHERMIRROR+="deb http://uk.archive.ubuntu.com/ubuntu/ "
+		if [[ $OTHERMIRROR != "" ]]; then
+			OTHERMIRROR+="|"
+		fi
+		OTHERMIRROR+="deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
 		OTHERMIRROR+="$DIST-security "
 		OTHERMIRROR+="main restricted universe multiverse"
-		OTHERMIRROR+="|deb http://uk.archive.ubuntu.com/ubuntu/ "
+		OTHERMIRROR+="|deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
 		OTHERMIRROR+="$DIST-updates "
 		OTHERMIRROR+="main restricted universe multiverse"
 	fi
@@ -188,6 +228,7 @@ psetuplog="$BUILDRESULT""pbuilderrc-setup.log"
 echo "OS = $OS" > $psetuplog
 echo "Distribution = $DIST" >> $psetuplog
 echo "Arch = $ARCH" >> $psetuplog
+echo "APT_CACHER = $APT_CACHER" >> $psetuplog
 echo "Mirrorsite = $MIRRORSITE" >> $psetuplog
 echo "Components = $COMPONENTS" >> $psetuplog
 echo "Debootstrapopts = $DEBOOTSTRAPOPTS" >> $psetuplog

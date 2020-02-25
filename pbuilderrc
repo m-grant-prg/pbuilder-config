@@ -48,6 +48,7 @@
 #				Tidy up MIRRORSITE & OTHERMIRRORS.	#
 #				Remove double logging of		#
 #				DEBOOTSTRAPOPTS.			#
+#				Correct logging of DEBOOTSTRAPOPTS.	#
 #									#
 #########################################################################
 
@@ -237,7 +238,7 @@ echo "Othermirror = $OTHERMIRROR" >> $psetuplog
 echo "Aptkeyrings = $APTKEYRINGS" >> $psetuplog
 echo "Extrapackages = $EXTRAPACKAGES" >> $psetuplog
 echo "Debootstrap = $DEBOOTSTRAP" >> $psetuplog
-echo "Debootstrapopts = $DEBOOTSTRAPOPTS" >> $psetuplog
+echo "Debootstrapopts = ${DEBOOTSTRAPOPTS[@]}" >> $psetuplog
 echo "Basetgz = $BASETGZ" >> $psetuplog
 echo "Pbuildersatisfydependscmd = $PBUILDERSATISFYDEPENDSCMD" >> $psetuplog
 echo "Buildresult = $BUILDRESULT" >> $psetuplog

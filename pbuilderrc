@@ -44,8 +44,10 @@
 # 10/11/2019	MG	1.0.7	Change example CL invocation above to	#
 #				remove unnecessary --override-config.	#
 #				Add support for Ubuntu.			#
-# 23/02/2020	MG	1.1.0	Add support for apt-cacher-ng.		#
+# 25/02/2020	MG	1.1.0	Add support for apt-cacher-ng.		#
 #				Tidy up MIRRORSITE & OTHERMIRRORS.	#
+#				Remove double logging of		#
+#				DEBOOTSTRAPOPTS.			#
 #									#
 #########################################################################
 
@@ -231,7 +233,6 @@ echo "Arch = $ARCH" >> $psetuplog
 echo "APT_CACHER = $APT_CACHER" >> $psetuplog
 echo "Mirrorsite = $MIRRORSITE" >> $psetuplog
 echo "Components = $COMPONENTS" >> $psetuplog
-echo "Debootstrapopts = $DEBOOTSTRAPOPTS" >> $psetuplog
 echo "Othermirror = $OTHERMIRROR" >> $psetuplog
 echo "Aptkeyrings = $APTKEYRINGS" >> $psetuplog
 echo "Extrapackages = $EXTRAPACKAGES" >> $psetuplog

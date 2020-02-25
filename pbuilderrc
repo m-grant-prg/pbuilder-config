@@ -49,6 +49,7 @@
 #				Remove double logging of		#
 #				DEBOOTSTRAPOPTS.			#
 #				Correct logging of DEBOOTSTRAPOPTS.	#
+#				Prefer printf over echo.		#
 #									#
 #########################################################################
 
@@ -85,7 +86,7 @@ no)
 	https_prefix="https:/"
 	;;
 *)
-	echo "Unknown APT_CACHER value: $APT_CACHER"
+	printf "Unknown APT_CACHER value: %s\n" $APT_CACHER
 	exit 1
 	;;
 esac
@@ -158,7 +159,7 @@ ubuntu)
 		"--keyring=/usr/share/keyrings/ubuntu-archive-keyring.gpg")
 	;;
 *)
-	echo "Unknown OS: $OS"
+	printf "Unknown OS: %s\n" $OS
 	exit 1
 	;;
 esac
@@ -168,12 +169,12 @@ esac
 # Check we now have a value of DIST and ARCH #
 ##############################################
 if [ "$DIST" == "" ]; then
-	echo "DIST is not set"
+	printf "DIST is not set\n"
 	exit 1
 fi
 
 if [ "$ARCH" == "" ]; then
-	echo "ARCH is not set"
+	printf "ARCH is not set\n"
 	exit 1
 fi
 
@@ -228,20 +229,20 @@ HOOKDIR="/home/mgrantprg/SWDev/pbuilder/hook.d/"
 #####################
 psetuplog="$BUILDRESULT""pbuilderrc-setup.log"
 
-echo "OS = $OS" > $psetuplog
-echo "Distribution = $DIST" >> $psetuplog
-echo "Arch = $ARCH" >> $psetuplog
-echo "APT_CACHER = $APT_CACHER" >> $psetuplog
-echo "Mirrorsite = $MIRRORSITE" >> $psetuplog
-echo "Components = $COMPONENTS" >> $psetuplog
-echo "Othermirror = $OTHERMIRROR" >> $psetuplog
-echo "Aptkeyrings = $APTKEYRINGS" >> $psetuplog
-echo "Extrapackages = $EXTRAPACKAGES" >> $psetuplog
-echo "Debootstrap = $DEBOOTSTRAP" >> $psetuplog
-echo "Debootstrapopts = ${DEBOOTSTRAPOPTS[@]}" >> $psetuplog
-echo "Basetgz = $BASETGZ" >> $psetuplog
-echo "Pbuildersatisfydependscmd = $PBUILDERSATISFYDEPENDSCMD" >> $psetuplog
-echo "Buildresult = $BUILDRESULT" >> $psetuplog
-echo "Aptcache = $APTCACHE" >> $psetuplog
-echo "Hookdir = $HOOKDIR" >> $psetuplog
+printf "OS = %s\n" "$OS" > $psetuplog
+printf "Distribution = %s\n" "$DIST" >> $psetuplog
+printf "Arch = %s\n" "$ARCH" >> $psetuplog
+printf "APT_CACHER = %s\n" "$APT_CACHER" >> $psetuplog
+printf "Mirrorsite = %s\n" "$MIRRORSITE" >> $psetuplog
+printf "Components = %s\n" "$COMPONENTS" >> $psetuplog
+printf "Othermirror = %s\n" "$OTHERMIRROR" >> $psetuplog
+printf "Aptkeyrings = %s\n" "$APTKEYRINGS" >> $psetuplog
+printf "Extrapackages = %s\n" "$EXTRAPACKAGES" >> $psetuplog
+printf "Debootstrap = %s\n" "$DEBOOTSTRAP" >> $psetuplog
+printf "Debootstrapopts = %s\n" "${DEBOOTSTRAPOPTS[@]}" >> $psetuplog
+printf "Basetgz = %s\n" "$BASETGZ" >> $psetuplog
+printf "Pbuildersatisfydependscmd = %s\n" "$PBUILDERSATISFYDEPENDSCMD" >> $psetuplog
+printf "Buildresult = %s\n" "$BUILDRESULT" >> $psetuplog
+printf "Aptcache = %s\n" "$APTCACHE" >> $psetuplog
+printf "Hookdir = %s\n" "$HOOKDIR" >> $psetuplog
 

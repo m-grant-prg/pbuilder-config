@@ -14,7 +14,9 @@
 # This pbuilderrc file sets up pbuilder to be able to build for OS's,	#
 # distributions and architectures. These values should be passed on the	#
 # command line. E.g.							#
-#	sudo OS=raspbian DIST=stretch ARCH=armhf pbuilder create	#
+#	sudo OS=raspbian DIST=stretch ARCH=armhf APT_CACHER=yes \	#
+#		pbuilder create --override-config \			#
+#		--debootstrapopts --variant=buildd			#
 #									#
 #########################################################################
 
@@ -46,13 +48,17 @@
 # 10/11/2019	MG	1.0.7	Change example CL invocation above to	#
 #				remove unnecessary --override-config.	#
 #				Add support for Ubuntu.			#
-# 25/02/2020	MG	1.1.0	Add support for apt-cacher-ng.		#
+# 28/02/2020	MG	1.1.0	Add support for apt-cacher-ng.		#
 #				Tidy up MIRRORSITE & OTHERMIRRORS.	#
 #				Remove double logging of		#
 #				DEBOOTSTRAPOPTS.			#
 #				Correct logging of DEBOOTSTRAPOPTS.	#
 #				Prefer printf over echo.		#
 #				Add accreditation for Stein Magnus Jodal#
+#				Allow pbuilder create to use these	#
+#				OTHERMIRROR settings with		#
+#				--override-config.			#
+#				Add PPA to ubuntu OTHERMIRROR.		#
 #									#
 #########################################################################
 
@@ -98,11 +104,10 @@ esac
 ########################################################
 # OTHERMIRROR may be added to later so initialise here #
 ########################################################
-if [[ $PBUILDER_OPERATION != create && $APT_CACHER == yes \
-	&& $OS != ubuntu ]]; then
+if [[ $APT_CACHER == yes && $OS != ubuntu ]]; then
 	OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$OS $DIST "
 	OTHERMIRROR+="beta stable staging"
-	APTKEYRINGS=("/var/cache/pbuilder/keyrings/hermes.gpg")
+	APTKEYRINGS=("/home/mgrantprg/SWDev/pbuilder/aptkeyrings/hermes.gpg")
 fi
 
 
@@ -113,53 +118,56 @@ case $OS in
 debian)
 	MIRRORSITE="$https_prefix/deb.debian.org/debian/"
 	COMPONENTS="main contrib non-free"
-	if [[ $PBUILDER_OPERATION != create ]]; then
-		if [[ $OTHERMIRROR != "" ]]; then
-			OTHERMIRROR+="|"
-		fi
-		OTHERMIRROR+="deb $https_prefix/dl.bintray.com/mgrantprg/"
-		OTHERMIRROR+="debian-utils $DIST stable"
-		OTHERMIRROR+="|deb $https_prefix/deb.debian.org/"
-		OTHERMIRROR+="debian-security/ $DIST/updates "
-		OTHERMIRROR+="main contrib non-free"
-		OTHERMIRROR+="|deb $https_prefix/deb.debian.org/debian "
-		OTHERMIRROR+="$DIST-updates "
-		OTHERMIRROR+="main contrib non-free"
+	if [[ $OTHERMIRROR != "" ]]; then
+		OTHERMIRROR+="|"
 	fi
+	OTHERMIRROR+="deb $https_prefix/deb.debian.org/debian-security/ "
+	OTHERMIRROR+="$DIST/updates main contrib non-free"
+	OTHERMIRROR+="|deb $https_prefix/deb.debian.org/debian $DIST-updates "
+	OTHERMIRROR+="main contrib non-free"
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
 		"--keyring=/usr/share/keyrings/debian-archive-keyring.gpg")
+
+	OTHERMIRROR+="|deb $https_prefix/dl.bintray.com/mgrantprg/debian-utils "
+	OTHERMIRROR+="$DIST stable"
+	APTKEYRINGS=("${APTKEYRINGS[@]}"
+		"/home/mgrantprg/SWDev/pbuilder/aptkeyrings/bintray.gpg")
 	;;
 raspbian)
 	MIRRORSITE="$http_prefix/mirrordirector.raspbian.org/raspbian/"
 	COMPONENTS="main contrib non-free rpi"
-	if [[ $PBUILDER_OPERATION != create ]]; then
-		if [[ $OTHERMIRROR != "" ]]; then
-			OTHERMIRROR+="|"
-		fi
-		OTHERMIRROR+="deb $https_prefix/dl.bintray.com/mgrantprg/"
-		OTHERMIRROR+="raspbian-utils $DIST stable"
-		OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.org/"
-		OTHERMIRROR+="debian/ $DIST main ui"
+	if [[ $OTHERMIRROR != "" ]]; then
+		OTHERMIRROR+="|"
 	fi
+	OTHERMIRROR+="deb $http_prefix/archive.raspberrypi.org/debian/ "
+	OTHERMIRROR+="$DIST main ui"
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
 		"--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg")
+
+	OTHERMIRROR+="|deb $https_prefix/dl.bintray.com/mgrantprg/"
+	OTHERMIRROR+="raspbian-utils $DIST stable"
+	APTKEYRINGS=("${APTKEYRINGS[@]}"
+		"/home/mgrantprg/SWDev/pbuilder/aptkeyrings/bintray.gpg")
 	;;
 ubuntu)
 	MIRRORSITE="$http_prefix/uk.archive.ubuntu.com/ubuntu/"
 	COMPONENTS="main restricted universe multiverse"
-	if [[ $PBUILDER_OPERATION != create ]]; then
-		if [[ $OTHERMIRROR != "" ]]; then
-			OTHERMIRROR+="|"
-		fi
-		OTHERMIRROR+="deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
-		OTHERMIRROR+="$DIST-security "
-		OTHERMIRROR+="main restricted universe multiverse"
-		OTHERMIRROR+="|deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
-		OTHERMIRROR+="$DIST-updates "
-		OTHERMIRROR+="main restricted universe multiverse"
+	if [[ $OTHERMIRROR != "" ]]; then
+		OTHERMIRROR+="|"
 	fi
+	OTHERMIRROR+="deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
+	OTHERMIRROR+="$DIST-security "
+	OTHERMIRROR+="main restricted universe multiverse"
+	OTHERMIRROR+="|deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
+	OTHERMIRROR+="$DIST-updates "
+	OTHERMIRROR+="main restricted universe multiverse"
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
 		"--keyring=/usr/share/keyrings/ubuntu-archive-keyring.gpg")
+
+	OTHERMIRROR+="|deb $http_prefix/ppa.launchpad.net/m-grant-prg/utils/"
+	OTHERMIRROR+="$OS $DIST main"
+	APTKEYRINGS=("${APTKEYRINGS[@]}"
+		"/home/mgrantprg/SWDev/pbuilder/aptkeyrings/launchpad.gpg")
 	;;
 *)
 	printf "Unknown OS: %s\n" $OS
@@ -239,7 +247,7 @@ printf "APT_CACHER = %s\n" "$APT_CACHER" >> $psetuplog
 printf "Mirrorsite = %s\n" "$MIRRORSITE" >> $psetuplog
 printf "Components = %s\n" "$COMPONENTS" >> $psetuplog
 printf "Othermirror = %s\n" "$OTHERMIRROR" >> $psetuplog
-printf "Aptkeyrings = %s\n" "$APTKEYRINGS" >> $psetuplog
+printf "Aptkeyrings = %s\n" "${APTKEYRINGS[@]}" >> $psetuplog
 printf "Extrapackages = %s\n" "$EXTRAPACKAGES" >> $psetuplog
 printf "Debootstrap = %s\n" "$DEBOOTSTRAP" >> $psetuplog
 printf "Debootstrapopts = %s\n" "${DEBOOTSTRAPOPTS[@]}" >> $psetuplog

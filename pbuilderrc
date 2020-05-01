@@ -59,6 +59,8 @@
 #				OTHERMIRROR settings with		#
 #				--override-config.			#
 #				Add PPA to ubuntu OTHERMIRROR.		#
+# 01/05/2020	MG	1.1.1	Ubuntu hermes repository now exists, so	#
+#				use it.					#
 #									#
 #########################################################################
 
@@ -104,7 +106,7 @@ esac
 ########################################################
 # OTHERMIRROR may be added to later so initialise here #
 ########################################################
-if [[ $APT_CACHER == yes && $OS != ubuntu ]]; then
+if [[ $APT_CACHER == yes ]]; then
 	OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$OS $DIST "
 	OTHERMIRROR+="beta stable staging"
 	APTKEYRINGS=("/home/mgrantprg/SWDev/pbuilder/aptkeyrings/hermes.gpg")

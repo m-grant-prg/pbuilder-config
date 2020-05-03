@@ -59,10 +59,11 @@
 #				OTHERMIRROR settings with		#
 #				--override-config.			#
 #				Add PPA to ubuntu OTHERMIRROR.		#
-# 02/05/2020	MG	1.1.1	Ubuntu hermes repository now exists, so	#
+# 03/05/2020	MG	1.1.1	Ubuntu hermes repository now exists, so	#
 #				use it.					#
 #				Correct aptkeyrings handling.		#
 #				Add extra package apt-utils.		#
+#				Add raspberrypi.org/debian keyring.	#
 #									#
 #########################################################################
 
@@ -151,6 +152,7 @@ raspbian)
 	OTHERMIRROR+="|deb $https_prefix/dl.bintray.com/mgrantprg/"
 	OTHERMIRROR+="raspbian-utils $DIST stable"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
+		"/etc/apt/trusted.gpg.d/raspberrypi-keyring.gpg"
 		"/etc/apt/trusted.gpg.d/bintray-keyring.gpg")
 	;;
 ubuntu)

@@ -67,6 +67,7 @@
 # 02/06/2020	MG	1.1.2	Correct environment variables from OS,	#
 #				DIST and ARCH, to DIST, REL and ARCH.	#
 # 27/07/2020	MG	1.1.3	Add quirks for xenial.			#
+# 15/11/2020	MG	1.1.4	Add alpha component to hermes repos.	#
 #									#
 #########################################################################
 
@@ -114,7 +115,7 @@ esac
 ########################################################
 if [[ $APT_CACHER == yes ]]; then
 	OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$DIST $REL "
-	OTHERMIRROR+="beta stable staging"
+	OTHERMIRROR+="alpha beta stable staging"
 	APTKEYRINGS=("/etc/apt/trusted.gpg.d/hermes-keyring.gpg")
 fi
 

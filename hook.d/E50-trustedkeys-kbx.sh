@@ -3,7 +3,7 @@
 #########################################################################
 #									#
 # Script ID: E50-trustedkeys-kbx.sh					#
-# Author: Copyright (C) 2018-2020  Mark Grant				#
+# Author: Copyright (C) 2018-2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -36,21 +36,26 @@
 # 03/05/2020	MG	1.0.5	Use the keyserver option as this is a	#
 #				fairly bare implementation in the	#
 #				chroot.					#
+# 25/01/2021	MG	1.0.6	Make the keyserver TLS certificate	#
+#				known to dirmngr.			#
+#				gpg to use hkps servers.		#
 #									#
 #########################################################################
 
 
 echo "Installing gpg key for m.grant.prg@gmail.com"
+dirmngr --daemon --hkp-cacert /usr/share/gnupg/sks-keyservers.netCA.pem
 
 # The keybox 'trustedkeys.kbx' is required by gpgv.
 gpg --no-default-keyring --keyring trustedkeys.kbx --fingerprint
 
 if [[ $PBUILDER_OPERATION == create ]]; then
 	gpg --no-default-keyring --keyring trustedkeys.kbx \
-		--keyserver hkp://pool.sks-keyservers.net --recv-keys 20ECF9F0
+		--keyserver hkps://hkps.pool.sks-keyservers.net \
+		--recv-keys 20ECF9F0
 else
 	gpg --no-default-keyring --keyring trustedkeys.kbx \
-		--keyserver hkp://pool.sks-keyservers.net --refresh-keys
+		--keyserver hkps://hkps.pool.sks-keyservers.net --refresh-keys
 fi
 
 find /root/.gnupg -type s | xargs rm -fv

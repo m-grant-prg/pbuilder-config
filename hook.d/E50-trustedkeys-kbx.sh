@@ -39,23 +39,28 @@
 # 25/01/2021	MG	1.0.6	Make the keyserver TLS certificate	#
 #				known to dirmngr.			#
 #				gpg to use hkps servers.		#
+# 08/02/2021	MG	1.0.7	Add quirk for xenial to still use hkp.	#
 #									#
 #########################################################################
 
 
 echo "Installing gpg key for m.grant.prg@gmail.com"
-dirmngr --daemon --hkp-cacert /usr/share/gnupg/sks-keyservers.netCA.pem
+if [[ $REL == xenial ]]; then
+	keyserver="hkp://pool.sks-keyservers.net"
+else
+	keyserver="hkps://hkps.pool.sks-keyservers.net"
+	dirmngr --daemon --hkp-cacert /usr/share/gnupg/sks-keyservers.netCA.pem
+fi
 
 # The keybox 'trustedkeys.kbx' is required by gpgv.
 gpg --no-default-keyring --keyring trustedkeys.kbx --fingerprint
 
 if [[ $PBUILDER_OPERATION == create ]]; then
 	gpg --no-default-keyring --keyring trustedkeys.kbx \
-		--keyserver hkps://hkps.pool.sks-keyservers.net \
-		--recv-keys 20ECF9F0
+		--keyserver $keyserver --recv-keys 20ECF9F0
 else
 	gpg --no-default-keyring --keyring trustedkeys.kbx \
-		--keyserver hkps://hkps.pool.sks-keyservers.net --refresh-keys
+		--keyserver $keyserver --refresh-keys
 fi
 
 find /root/.gnupg -type s | xargs rm -fv

@@ -71,6 +71,8 @@
 # 11/01/2021	MG	1.1.5	Add a non-existent user id for the	#
 #				non-root build and a user name for use	#
 #				by fakeroot.				#
+# 09/02/2021	MG	1.1.6	Move from Bintray to OpenSUSE Build	#
+#				Service.				#
 #									#
 #########################################################################
 
@@ -85,6 +87,25 @@ set -e
 # Init variables #
 ##################
 OTHERMIRROR=""
+
+
+##########################################################################
+# OpenSUSE Build Service needs a numeric release for Debian and Raspbian #
+##########################################################################
+case $REL in
+stretch)
+	obs_rel="9.0"
+	;;
+buster)
+	obs_rel="10"
+	;;
+bullseye)
+	obs_rel="11"
+	;;
+bookworm)
+	obs_rel="12"
+	;;
+esac
 
 
 #########################################################################
@@ -140,10 +161,10 @@ debian)
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
 		"--keyring=/usr/share/keyrings/debian-archive-keyring.gpg")
 
-	OTHERMIRROR+="|deb $https_prefix/dl.bintray.com/mgrantprg/debian-utils "
-	OTHERMIRROR+="$REL stable"
+	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
+	OTHERMIRROR+="/m-grant-prg/Debian_$obs_rel/ /"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
-		"/etc/apt/trusted.gpg.d/bintray-keyring.gpg")
+		"/etc/apt/trusted.gpg.d/obs-debian-keyring.gpg")
 	;;
 raspbian)
 	MIRRORSITE="$http_prefix/mirrordirector.raspbian.org/raspbian/"
@@ -156,11 +177,11 @@ raspbian)
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
 		"--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg")
 
-	OTHERMIRROR+="|deb $https_prefix/dl.bintray.com/mgrantprg/"
-	OTHERMIRROR+="raspbian-utils $REL stable"
+	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
+	OTHERMIRROR+="/m-grant-prg/Raspbian_$obs_rel/ /"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
 		"/etc/apt/trusted.gpg.d/raspberrypi-keyring.gpg"
-		"/etc/apt/trusted.gpg.d/bintray-keyring.gpg")
+		"/etc/apt/trusted.gpg.d/obs-raspbian-keyring.gpg")
 	;;
 ubuntu)
 	MIRRORSITE="$http_prefix/uk.archive.ubuntu.com/ubuntu/"

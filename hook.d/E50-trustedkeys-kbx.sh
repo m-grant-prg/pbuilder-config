@@ -41,11 +41,16 @@
 #				gpg to use hkps servers.		#
 # 08/02/2021	MG	1.0.7	Add quirk for xenial to still use hkp.	#
 # 09/02/2021	MG	1.0.8	Add stretch to xenial quirk.		#
+#				Ensure .gnupg directory exists before	#
+#				invoking dirmngr.			#
 #									#
 #########################################################################
 
 
 echo "Installing gpg key for m.grant.prg@gmail.com"
+# Ensure the .gnupg directory exists.
+gpg --list-keys
+
 if [[ $REL == xenial || $REL == stretch ]]; then
 	keyserver="hkp://pool.sks-keyservers.net"
 else

@@ -73,6 +73,7 @@
 #				by fakeroot.				#
 # 09/02/2021	MG	1.1.6	Move from Bintray to OpenSUSE Build	#
 #				Service.				#
+# 24/04/2021	MG	1.1.7	Prefer curl to wget.			#
 #									#
 #########################################################################
 
@@ -227,7 +228,7 @@ fi
 #####################################################
 # We always need these packages in the base tarball #
 #####################################################
-EXTRAPACKAGES+=" apt-utils dirmngr gnupg2 software-properties-common vim wget"
+EXTRAPACKAGES+=" apt-utils curl dirmngr gnupg2 software-properties-common vim"
 if [[ $REL == xenial ]]; then
 	EXTRAPACKAGES+=" aptitude"
 fi

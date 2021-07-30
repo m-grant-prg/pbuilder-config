@@ -43,6 +43,8 @@
 # 09/02/2021	MG	1.0.8	Add stretch to xenial quirk.		#
 #				Ensure .gnupg directory exists before	#
 #				invoking dirmngr.			#
+# 30/07/2021	MG	1.0.9	sks-keyservers has been shutdown,	#
+#				replace with keyservers.ubuntu.com	#
 #									#
 #########################################################################
 
@@ -52,10 +54,9 @@ echo "Installing gpg key for m.grant.prg@gmail.com"
 gpg --list-keys
 
 if [[ $REL == xenial || $REL == stretch ]]; then
-	keyserver="hkp://pool.sks-keyservers.net"
+	keyserver="hkp://keyserver.ubuntu.com"
 else
-	keyserver="hkps://hkps.pool.sks-keyservers.net"
-	dirmngr --daemon --hkp-cacert /usr/share/gnupg/sks-keyservers.netCA.pem
+	keyserver="hkps://keyserver.ubuntu.com"
 fi
 
 # The keybox 'trustedkeys.kbx' is required by gpgv.

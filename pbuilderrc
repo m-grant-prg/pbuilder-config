@@ -8,7 +8,7 @@
 # Author: Copyright (C) 2018-2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # This pbuilderrc file provides a mechanism for pbuilder to be able to	#
@@ -78,6 +78,7 @@
 #				bullseye onwards.			#
 # 27/08/2021	MG	1.1.9	Use distro-info command to retrieve	#
 #				numeric value for release codenames.	#
+# 03/12/2021	MG	1.1.10	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

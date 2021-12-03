@@ -3,10 +3,10 @@
 #########################################################################
 #									#
 # Script ID: H50-gpgv-warning.sh					#
-# Author: Copyright (C) 2018  Mark Grant				#
+# Author: Copyright (C) 2018, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A hook script to print a warning that the following -built in- gpgv	#
@@ -26,6 +26,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 26/02/2018	MG	1.0.1	Created.				#
+# 03/12/2021	MG	1.0.2	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

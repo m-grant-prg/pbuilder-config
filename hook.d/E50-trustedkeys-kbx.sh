@@ -6,7 +6,7 @@
 # Author: Copyright (C) 2018-2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A hook script to prepare for gpgv.					#
@@ -45,6 +45,7 @@
 #				invoking dirmngr.			#
 # 30/07/2021	MG	1.0.9	sks-keyservers has been shutdown,	#
 #				replace with keyservers.ubuntu.com	#
+# 03/12/2021	MG	1.0.10	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

@@ -3,10 +3,10 @@
 #########################################################################
 #									#
 # Script ID: D40-gpgv-check-dsc.sh					#
-# Author: Copyright (C) 2018, 2020  Mark Grant				#
+# Author: Copyright (C) 2018, 2020, 2021  Mark Grant			#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A hook script to run gpgv on all .dsc files.				#
@@ -33,6 +33,7 @@
 #				trustedkeys.kbx keybox.			#
 # 27/07/2020	MG	1.0.3	Skip checks if building for xenial as	#
 #				old version handles differently.	#
+# 03/12/2021	MG	1.0.4	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

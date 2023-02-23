@@ -3,7 +3,11 @@
 #########################################################################
 #									#
 # Script ID: D40-gpgv-check-dsc.sh					#
-# Author: Copyright (C) 2018, 2020, 2021  Mark Grant			#
+# Author: Copyright (C) 2018, 2020, 2021, 2023  Mark Grant		#
+#									#
+# This file is maintained in the project at:-				#
+#	https://github.com/m-grant-prg/pbuilder-config			#
+#		new versions are merely copied to consumer projects.	#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -34,6 +38,8 @@
 # 27/07/2020	MG	1.0.3	Skip checks if building for xenial as	#
 #				old version handles differently.	#
 # 03/12/2021	MG	1.0.4	Tighten SPDX tag.			#
+# 23/02/2023	MG	1.0.5	Add a comment that this file is		#
+#				maintained in another project.		#
 #									#
 #########################################################################
 

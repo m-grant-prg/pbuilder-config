@@ -89,6 +89,7 @@
 # 23/02/2023	MG	1.1.13	Add a comment that this file is		#
 #				maintained in another project.		#
 # 27/03/2023	MG	1.1.14	Add quirk for Debian Testing.		#
+# 04/04/2023	MG	1.1.15	Remove EOL Xenial specifics.		#
 #									#
 #########################################################################
 
@@ -254,9 +255,6 @@ fi
 # We always need these packages in the base tarball #
 #####################################################
 EXTRAPACKAGES+=" apt-utils curl dirmngr gnupg2 software-properties-common vim"
-if [[ $REL == xenial ]]; then
-	EXTRAPACKAGES+=" aptitude"
-fi
 
 
 ###################################
@@ -291,11 +289,7 @@ BASETGZ="/var/cache/pbuilder/$DIST-$REL-$ARCH-base.tgz"
 DISTRIBUTION="$REL"
 
 PBUILDERSATISFYDEPENDSCMD=/usr/lib/pbuilder/
-if [[ $REL = xenial ]]; then
-	PBUILDERSATISFYDEPENDSCMD+=pbuilder-satisfydepends-aptitude
-else
-	PBUILDERSATISFYDEPENDSCMD+=pbuilder-satisfydepends-apt
-fi
+PBUILDERSATISFYDEPENDSCMD+=pbuilder-satisfydepends-apt
 
 BUILDRESULT="/home/mgrantprg/SWDev/pbuilder/$DIST-$REL-$ARCH-result/"
 

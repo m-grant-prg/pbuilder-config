@@ -88,6 +88,7 @@
 #				bullseye.				#
 # 23/02/2023	MG	1.1.13	Add a comment that this file is		#
 #				maintained in another project.		#
+# 27/03/2023	MG	1.1.14	Add quirk for Debian Testing.		#
 #									#
 #########################################################################
 
@@ -107,15 +108,19 @@ OTHERMIRROR=""
 
 #########################################################################
 # OpenSUSE Build Service needs a numeric string release for Debian and	#
-# Raspbian and a numeric value is needed for changes such as >= release.#
-# The following is valid for stretch onwards with a quirk for the OBS	#
-# stretch version.							#
+# Raspbian stable releases and a numeric value is needed for changes	#
+# such as >= release. The following is valid for stretch onwards with a	#
+# quirk for the OBS stretch version and Debian Testing version.		#
 #########################################################################
 if [[ $DIST == "debian" || $DIST == "raspbian" ]];then
-	num_rel=$(distro-info -r --series=$REL)
-	if [[ $REL == "stretch" ]]; then
+	if [[ $REL == "testing" ]];then
+		num_rel=$(distro-info -r --testing)
+		obs_rel="Testing"
+	elif [[ $REL == "stretch" ]]; then
+		num_rel=$(distro-info -r --series=$REL)
 		obs_rel="9.0"
 	else
+		num_rel=$(distro-info -r --series=$REL)
 		obs_rel=$num_rel
 	fi
 fi

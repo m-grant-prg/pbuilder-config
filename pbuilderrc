@@ -90,6 +90,7 @@
 #				maintained in another project.		#
 # 27/03/2023	MG	1.1.14	Add quirk for Debian Testing.		#
 # 04/04/2023	MG	1.1.15	Remove EOL Xenial specifics.		#
+#				Remove EOL stretch specifics.		#
 #									#
 #########################################################################
 
@@ -110,16 +111,13 @@ OTHERMIRROR=""
 #########################################################################
 # OpenSUSE Build Service needs a numeric string release for Debian and	#
 # Raspbian stable releases and a numeric value is needed for changes	#
-# such as >= release. The following is valid for stretch onwards with a	#
-# quirk for the OBS stretch version and Debian Testing version.		#
+# such as >= release. The following is valid for buster onwards with a	#
+# quirk for the OBS Debian Testing version.				#
 #########################################################################
 if [[ $DIST == "debian" || $DIST == "raspbian" ]];then
 	if [[ $REL == "testing" ]];then
 		num_rel=$(distro-info -r --testing)
 		obs_rel="Testing"
-	elif [[ $REL == "stretch" ]]; then
-		num_rel=$(distro-info -r --series=$REL)
-		obs_rel="9.0"
 	else
 		num_rel=$(distro-info -r --series=$REL)
 		obs_rel=$num_rel
@@ -198,7 +196,7 @@ raspbian)
 	fi
 	OTHERMIRROR+="deb $http_prefix/archive.raspberrypi.org/debian/ "
 	OTHERMIRROR+="$REL main"
-	if [[ $REL == buster ]] || [[ $REL == stretch ]]; then
+	if [[ $REL == buster ]]; then
 		OTHERMIRROR+=" ui"
 	fi
 	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"

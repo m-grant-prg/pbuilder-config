@@ -190,17 +190,6 @@ fi
 EXTRAPACKAGES+=" apt-utils curl dirmngr gnupg2 software-properties-common vim"
 
 
-###################################
-# Deal with potential cross-build #
-###################################
-if [ "$ARCH" == "armel" ] && [ "$(dpkg --print-architecture)" != "armel" ]; then
-    DEBOOTSTRAP="qemu-debootstrap"
-fi
-if [ "$ARCH" == "armhf" ] && [ "$(dpkg --print-architecture)" != "armhf" ]; then
-    DEBOOTSTRAP="qemu-debootstrap"
-fi
-
-
 ########################
 # Add the Architecture #
 ########################

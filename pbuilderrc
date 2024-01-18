@@ -2,10 +2,9 @@
 
 #########################################################################
 #									#
-# Script ID: .pbuilderrc						#
 # Based on an outline by Stein Magnus Jodal				#
 #	https://jodal.no/2015/03/08/building-arm-debs-with-pbuilder/	#
-# Author: Copyright (C) 2018-2023  Mark Grant				#
+# Author: Copyright (C) 2018-2024  Mark Grant				#
 #									#
 # This file is maintained in the project at:-				#
 #	https://github.com/m-grant-prg/pbuilder-config			#
@@ -26,71 +25,7 @@
 
 #########################################################################
 #									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 22/02/2018	MG	1.0.1	Created.				#
-# 17/05/2018	MG	1.0.2	Add staging component.			#
-#				Add AUTOCLEANAPTCACHE=yes which does an	#
-#				apt-get autoclean on the cache.		#
-# 19/10/2018	MG	1.0.3	Add Bintray to OTHERMIRROR.		#
-# 04/02/2019	MG	1.0.4	Update OTHERMIRROR for new source	#
-#				tarball repo on hermes.			#
-#				Add vim as an extra package.		#
-# 29/07/2019	MG	1.0.5	Use OS and DIST in OTHERMIRROR.		#
-#				Correct example create CL above.	#
-#				Add security & updates to OTHERMIRROR.	#
-#				Remove Ubuntu as not maintained and	#
-#				possibly misleading.			#
-#				Correct Purpose section above.		#
-#				Do not set OTHERMIRROR when creating	#
-#				the archive as it will fail due to	#
-#				missing keys.				#
-# 19/10/2019	MG	1.0.6	Change Bintray Debian repo name. Change	#
-#				Raspbian to use Bintray.		#
-# 10/11/2019	MG	1.0.7	Change example CL invocation above to	#
-#				remove unnecessary --override-config.	#
-#				Add support for Ubuntu.			#
-# 28/02/2020	MG	1.1.0	Add support for apt-cacher-ng.		#
-#				Tidy up MIRRORSITE & OTHERMIRRORS.	#
-#				Remove double logging of		#
-#				DEBOOTSTRAPOPTS.			#
-#				Correct logging of DEBOOTSTRAPOPTS.	#
-#				Prefer printf over echo.		#
-#				Add accreditation for Stein Magnus Jodal#
-#				Allow pbuilder create to use these	#
-#				OTHERMIRROR settings with		#
-#				--override-config.			#
-#				Add PPA to ubuntu OTHERMIRROR.		#
-# 03/05/2020	MG	1.1.1	Ubuntu hermes repository now exists, so	#
-#				use it.					#
-#				Correct aptkeyrings handling.		#
-#				Add extra package apt-utils.		#
-#				Add raspberrypi.org/debian keyring.	#
-# 02/06/2020	MG	1.1.2	Correct environment variables from OS,	#
-#				DIST and ARCH, to DIST, REL and ARCH.	#
-# 27/07/2020	MG	1.1.3	Add quirks for xenial.			#
-# 15/11/2020	MG	1.1.4	Add alpha component to hermes repos.	#
-# 11/01/2021	MG	1.1.5	Add a non-existent user id for the	#
-#				non-root build and a user name for use	#
-#				by fakeroot.				#
-# 09/02/2021	MG	1.1.6	Move from Bintray to OpenSUSE Build	#
-#				Service.				#
-# 24/04/2021	MG	1.1.7	Prefer curl to wget.			#
-# 21/08/2021	MG	1.1.8	Debian security suite name change from	#
-#				bullseye onwards.			#
-# 27/08/2021	MG	1.1.9	Use distro-info command to retrieve	#
-#				numeric value for release codenames.	#
-# 03/12/2021	MG	1.1.10	Tighten SPDX tag.			#
-# 17/01/2022	MG	1.1.11	Use new keyring name for OBS.		#
-# 04/02/2022	MG	1.1.12	raspberrypi.org component ui retired in	#
-#				bullseye.				#
-# 23/02/2023	MG	1.1.13	Add a comment that this file is		#
-#				maintained in another project.		#
-# 27/03/2023	MG	1.1.14	Add quirk for Debian Testing.		#
-# 04/04/2023	MG	1.1.15	Remove EOL Xenial specifics.		#
-#				Remove EOL stretch specifics.		#
+# Version	v1.1.16							#
 #									#
 #########################################################################
 

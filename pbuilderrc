@@ -244,6 +244,7 @@ psetuplog="$BUILDRESULT""pbuilderrc-setup.log"
 
 printf "Distribution = %s\n" "$DIST" > $psetuplog
 printf "Release = %s\n" "$REL" >> $psetuplog
+printf "Numeric Release = %i\n" "$num_rel" >> $psetuplog
 printf "Arch = %s\n" "$ARCH" >> $psetuplog
 printf "APT_CACHER = %s\n" "$APT_CACHER" >> $psetuplog
 printf "Mirrorsite = %s\n" "$MIRRORSITE" >> $psetuplog

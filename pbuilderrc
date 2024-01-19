@@ -17,7 +17,7 @@
 # This pbuilderrc file provides a mechanism for pbuilder to be able to	#
 # build for different distributions, releases and architectures. This	#
 # information is conveyed on the command line. E.g.			#
-#	sudo DIST=raspbian REL=stretch ARCH=armhf APT_CACHER=yes \	#
+#	sudo DIST=rpios REL=stretch ARCH=armhf APT_CACHER=yes \	#
 #		pbuilder create --override-config \			#
 #		--debootstrapopts --variant=buildd			#
 #									#
@@ -43,13 +43,46 @@ declare -i num_rel	# Numeric release value
 OTHERMIRROR=""
 
 
+#############
+# Functions #
+#############
+
+# Basic Debian setup which can be used for rpios on arm64 etc which utilise
+# Debian repos.
+# No parameters
+# No return value
+debian_basic_setup()
+{
+	MIRRORSITE="$https_prefix/deb.debian.org/debian/"
+	COMPONENTS="main contrib non-free"
+	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
+		"--keyring=/usr/share/keyrings/debian-archive-keyring.gpg")
+	if [[ $OTHERMIRROR != "" ]]; then
+		OTHERMIRROR+="|"
+	fi
+	OTHERMIRROR+="deb $https_prefix/deb.debian.org/debian-security/ "
+	# Change of name of the security suite from bullseye onwards
+	if (( $num_rel >= 11 )); then
+		OTHERMIRROR+="$REL-security main contrib non-free"
+	else
+		OTHERMIRROR+="$REL/updates main contrib non-free"
+	fi
+	OTHERMIRROR+="|deb $https_prefix/deb.debian.org/debian $REL-updates "
+	OTHERMIRROR+="main contrib non-free"
+	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
+	OTHERMIRROR+="/m-grant-prg/Debian_$obs_rel/ /"
+	APTKEYRINGS=("${APTKEYRINGS[@]}"
+		"/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg")
+}
+
+
 #########################################################################
 # OpenSUSE Build Service needs a numeric string release for Debian and	#
-# Raspbian stable releases and a numeric value is needed for changes	#
+# rpios stable releases and a numeric value is needed for changes	#
 # such as >= release. The following is valid for buster onwards with a	#
 # quirk for the OBS Debian Testing version.				#
 #########################################################################
-if [[ $DIST == "debian" || $DIST == "raspbian" ]];then
+if [[ $DIST == "debian" || $DIST == "rpios" ]];then
 	if [[ $REL == "testing" ]];then
 		num_rel=$(distro-info -r --testing)
 		obs_rel="Testing"
@@ -101,51 +134,38 @@ fi
 ##########################
 case $DIST in
 debian)
-	MIRRORSITE="$https_prefix/deb.debian.org/debian/"
-	COMPONENTS="main contrib non-free"
-	if [[ $OTHERMIRROR != "" ]]; then
-		OTHERMIRROR+="|"
-	fi
-	OTHERMIRROR+="deb $https_prefix/deb.debian.org/debian-security/ "
-	# Change of name of the security suite from bullseye onwards
-	if (( $num_rel >= 11 )); then
-		OTHERMIRROR+="$REL-security main contrib non-free"
-	else
-		OTHERMIRROR+="$REL/updates main contrib non-free"
-	fi
-	OTHERMIRROR+="|deb $https_prefix/deb.debian.org/debian $REL-updates "
-	OTHERMIRROR+="main contrib non-free"
-	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
-		"--keyring=/usr/share/keyrings/debian-archive-keyring.gpg")
-
-	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
-	OTHERMIRROR+="/m-grant-prg/Debian_$obs_rel/ /"
-	APTKEYRINGS=("${APTKEYRINGS[@]}"
-		"/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg")
+	debian_basic_setup
 	;;
-raspbian)
-	MIRRORSITE="$http_prefix/mirrordirector.raspbian.org/raspbian/"
-	COMPONENTS="main contrib non-free rpi"
-	if [[ $OTHERMIRROR != "" ]]; then
-		OTHERMIRROR+="|"
+rpios)
+	# arm64 onwards uses the standard Debian repositories.
+	if [[ $ARCH == "armhf" || $ARCH == "armel" ]]; then
+		MIRRORSITE="$http_prefix/mirrordirector.raspbian.org/raspbian/"
+		COMPONENTS="main contrib non-free rpi"
+		DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
+		   "--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg")
+		if [[ $OTHERMIRROR != "" ]]; then
+			OTHERMIRROR+="|"
+		fi
+		OTHERMIRROR+="deb http://download.opensuse.org/repositories"
+		OTHERMIRROR+="/home:/m-grant-prg/Raspbian_$obs_rel/ /"
+		APTKEYRINGS=("${APTKEYRINGS[@]}"
+			"/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg")
+	else
+		debian_basic_setup
 	fi
-	OTHERMIRROR+="deb $http_prefix/archive.raspberrypi.org/debian/ "
+	OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.org/debian/ "
 	OTHERMIRROR+="$REL main"
 	if [[ $REL == buster ]]; then
 		OTHERMIRROR+=" ui"
 	fi
-	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
-		"--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg")
-
-	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
-	OTHERMIRROR+="/m-grant-prg/Raspbian_$obs_rel/ /"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
-		"/etc/apt/trusted.gpg.d/raspberrypi-keyring.gpg"
-		"/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg")
+		"/etc/apt/trusted.gpg.d/raspberrypi-keyring.gpg")
 	;;
 ubuntu)
 	MIRRORSITE="$http_prefix/uk.archive.ubuntu.com/ubuntu/"
 	COMPONENTS="main restricted universe multiverse"
+	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
+		"--keyring=/usr/share/keyrings/ubuntu-archive-keyring.gpg")
 	if [[ $OTHERMIRROR != "" ]]; then
 		OTHERMIRROR+="|"
 	fi
@@ -155,9 +175,6 @@ ubuntu)
 	OTHERMIRROR+="|deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
 	OTHERMIRROR+="$REL-updates "
 	OTHERMIRROR+="main restricted universe multiverse"
-	DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
-		"--keyring=/usr/share/keyrings/ubuntu-archive-keyring.gpg")
-
 	OTHERMIRROR+="|deb $http_prefix/ppa.launchpad.net/m-grant-prg/utils/"
 	OTHERMIRROR+="$DIST $REL main"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"

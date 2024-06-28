@@ -25,7 +25,7 @@
 
 #########################################################################
 #									#
-# Version	v1.1.16							#
+# Version	v1.1.17							#
 #									#
 #########################################################################
 
@@ -155,9 +155,6 @@ rpios)
 	fi
 	OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.org/debian/ "
 	OTHERMIRROR+="$REL main"
-	if [[ $REL == buster ]]; then
-		OTHERMIRROR+=" ui"
-	fi
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
 		"/etc/apt/trusted.gpg.d/raspberrypi-keyring.gpg")
 	;;

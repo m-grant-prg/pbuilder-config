@@ -4,7 +4,7 @@
 #									#
 # Based on an outline by Stein Magnus Jodal				#
 #	https://jodal.no/2015/03/08/building-arm-debs-with-pbuilder/	#
-# Author: Copyright (C) 2018-2024  Mark Grant				#
+# Author: Copyright (C) 2018-2025  Mark Grant				#
 #									#
 # This file is maintained in the project at:-				#
 #	https://github.com/m-grant-prg/pbuilder-config			#
@@ -25,7 +25,7 @@
 
 #########################################################################
 #									#
-# Version	v1.1.17							#
+# Version	v1.1.18							#
 #									#
 #########################################################################
 
@@ -61,12 +61,7 @@ debian_basic_setup()
 		OTHERMIRROR+="|"
 	fi
 	OTHERMIRROR+="deb $https_prefix/deb.debian.org/debian-security/ "
-	# Change of name of the security suite from bullseye onwards
-	if (( $num_rel >= 11 )); then
-		OTHERMIRROR+="$REL-security main contrib non-free"
-	else
-		OTHERMIRROR+="$REL/updates main contrib non-free"
-	fi
+	OTHERMIRROR+="$REL-security main contrib non-free"
 	OTHERMIRROR+="|deb $https_prefix/deb.debian.org/debian $REL-updates "
 	OTHERMIRROR+="main contrib non-free"
 	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"

@@ -25,7 +25,7 @@
 
 #########################################################################
 #									#
-# Version	v1.1.18							#
+# Version	v1.1.19							#
 #									#
 #########################################################################
 
@@ -196,7 +196,7 @@ fi
 #####################################################
 # We always need these packages in the base tarball #
 #####################################################
-EXTRAPACKAGES+=" apt-utils curl dirmngr gnupg2 software-properties-common vim"
+EXTRAPACKAGES+=" apt-utils curl dirmngr gnupg2 vim"
 
 
 ########################

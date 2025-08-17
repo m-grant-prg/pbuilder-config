@@ -196,7 +196,7 @@ fi
 #####################################################
 # We always need these packages in the base tarball #
 #####################################################
-EXTRAPACKAGES+=" apt-utils curl dirmngr gnupg2 vim"
+EXTRAPACKAGES+=" apt-utils curl dirmngr gpgv gnupg2 vim"
 
 
 ########################

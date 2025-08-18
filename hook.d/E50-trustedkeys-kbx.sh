@@ -34,7 +34,7 @@ echo "Installing gpg key for m.grant.prg@gmail.com"
 # Ensure the .gnupg directory exists.
 gpg --list-keys
 
-keyserver="hkps://keyserver.ubuntu.com"
+keyserver="keyserver.ubuntu.com"
 
 # The keybox 'trustedkeys.kbx' is required by gpgv.
 gpg --no-default-keyring --keyring trustedkeys.kbx --fingerprint

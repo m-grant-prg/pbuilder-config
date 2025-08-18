@@ -2,7 +2,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2018, 2020, 2021, 2023, 2024  Mark Grant	#
+# Author: Copyright (C) 2018, 2020, 2021, 2023-2025  Mark Grant		#
 #									#
 # This file is maintained in the project at:-				#
 #	https://github.com/m-grant-prg/pbuilder-config			#
@@ -26,14 +26,12 @@
 
 #########################################################################
 #									#
-# Version	v1.0.6							#
+# Version	v1.0.5							#
 #									#
 #########################################################################
 
 
-if [[ $REL != xenial ]]; then
-	echo "Checking the following .dsc files:-"
-	ls /build/*.dsc
-	gpgv /build/*.dsc
-fi
+echo "Checking the following .dsc files:-"
+ls /build/*.dsc
+gpgv /build/*.dsc
 

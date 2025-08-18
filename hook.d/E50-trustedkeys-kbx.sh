@@ -2,7 +2,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2018-2021, 2023, 2024  Mark Grant		#
+# Author: Copyright (C) 2018-2021, 2023-2025  Mark Grant		#
 #									#
 # This file is maintained in the project at:-				#
 #	https://github.com/m-grant-prg/pbuilder-config			#
@@ -25,7 +25,7 @@
 
 #########################################################################
 #									#
-# Version	v1.0.12							#
+# Version	v1.0.13							#
 #									#
 #########################################################################
 
@@ -34,11 +34,7 @@ echo "Installing gpg key for m.grant.prg@gmail.com"
 # Ensure the .gnupg directory exists.
 gpg --list-keys
 
-if [[ $REL == xenial || $REL == stretch ]]; then
-	keyserver="hkp://keyserver.ubuntu.com"
-else
-	keyserver="hkps://keyserver.ubuntu.com"
-fi
+keyserver="hkps://keyserver.ubuntu.com"
 
 # The keybox 'trustedkeys.kbx' is required by gpgv.
 gpg --no-default-keyring --keyring trustedkeys.kbx --fingerprint

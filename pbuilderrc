@@ -25,7 +25,7 @@
 
 #########################################################################
 #									#
-# Version	v1.1.19							#
+# Version	v1.1.20							#
 #									#
 #########################################################################
 
@@ -40,6 +40,11 @@ set -e
 # Init variables #
 ##################
 declare -i num_rel	# Numeric release value
+# Allow for interaction e.g. for asking whether to overwrite config files,
+# otherwise an apt upgrade will fail.
+DEBIAN_FRONTEND="readline"
+# We always need these packages in the base tarball #
+EXTRAPACKAGES="apt-utils curl dirmngr gpgv gnupg2 libreadline-dev vim"
 OTHERMIRROR=""
 
 
@@ -193,12 +198,6 @@ if [ "$ARCH" == "" ]; then
 fi
 
 
-#####################################################
-# We always need these packages in the base tarball #
-#####################################################
-EXTRAPACKAGES+=" apt-utils curl dirmngr gpgv gnupg2 vim"
-
-
 ########################
 # Add the Architecture #
 ########################
@@ -249,6 +248,7 @@ printf "Mirrorsite = %s\n" "$MIRRORSITE" >> $psetuplog
 printf "Components = %s\n" "$COMPONENTS" >> $psetuplog
 printf "Othermirror = %s\n" "$OTHERMIRROR" >> $psetuplog
 printf "Aptkeyrings = %s\n" "${APTKEYRINGS[@]}" >> $psetuplog
+printf "Debian_Frontend = %s\n" "$DEBIAN_FRONTEND" >> $psetuplog
 printf "Extrapackages = %s\n" "$EXTRAPACKAGES" >> $psetuplog
 printf "Builduserid = %s\n" "$BUILDUSERID" >> $psetuplog
 printf "Buildusername = %s\n" "$BUILDUSERNAME" >> $psetuplog

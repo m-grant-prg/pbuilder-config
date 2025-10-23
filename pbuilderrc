@@ -45,6 +45,7 @@ declare -i num_rel	# Numeric release value
 DEBIAN_FRONTEND="readline"
 # We always need these packages in the base tarball #
 EXTRAPACKAGES="apt-utils curl dirmngr gpgv gnupg2 libreadline-dev vim"
+EXTRAPACKAGES+=" mgrant-obs-deb-keyring"
 OTHERMIRROR=""
 
 

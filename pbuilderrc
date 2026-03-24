@@ -4,7 +4,7 @@
 #									#
 # Based on an outline by Stein Magnus Jodal				#
 #	https://jodal.no/2015/03/08/building-arm-debs-with-pbuilder/	#
-# Author: Copyright (C) 2018-2025  Mark Grant				#
+# Author: Copyright (C) 2018-2026  Mark Grant				#
 #									#
 # This file is maintained in the project at:-				#
 #	https://github.com/m-grant-prg/pbuilder-config			#
@@ -25,7 +25,7 @@
 
 #########################################################################
 #									#
-# Version	v1.1.21							#
+# Version	v1.1.22							#
 #									#
 #########################################################################
 
@@ -45,7 +45,6 @@ declare -i num_rel	# Numeric release value
 DEBIAN_FRONTEND="readline"
 # We always need these packages in the base tarball #
 EXTRAPACKAGES="apt-utils curl dirmngr gpgv gnupg2 libreadline-dev vim"
-EXTRAPACKAGES+=" mgrant-obs-deb-keyring"
 OTHERMIRROR=""
 
 
@@ -137,9 +136,11 @@ fi
 ##########################
 case $DIST in
 debian)
+	EXTRAPACKAGES+=" mgrant-obs-deb-keyring"
 	debian_basic_setup
 	;;
 rpios)
+	EXTRAPACKAGES+=" mgrant-obs-deb-keyring"
 	# arm64 onwards uses the standard Debian repositories.
 	if [[ $ARCH == "armhf" || $ARCH == "armel" ]]; then
 		MIRRORSITE="$http_prefix/mirrordirector.raspbian.org/raspbian/"

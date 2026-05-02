@@ -25,7 +25,7 @@
 
 #########################################################################
 #									#
-# Version	v1.1.22							#
+# Version	v1.1.23							#
 #									#
 #########################################################################
 
@@ -73,7 +73,7 @@ debian_basic_setup()
 	OTHERMIRROR+="/m-grant-prg/Debian_$obs_rel/ /"
 	if [[ $PBUILDER_OPERATION == create ]]; then
 		APTKEYRINGS=("${APTKEYRINGS[@]}"
-			"/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg")
+			"/usr/share/keyrings/home_m-grant-prg.gpg")
 	fi
 }
 
@@ -127,7 +127,7 @@ esac
 if [[ $APT_CACHER == yes ]]; then
 	OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$DIST $REL "
 	OTHERMIRROR+="alpha beta stable"
-	APTKEYRINGS=("/etc/apt/trusted.gpg.d/hermes-keyring.gpg")
+	APTKEYRINGS=("/usr/share/keyrings/hermes-keyring.gpg")
 fi
 
 
@@ -154,15 +154,15 @@ rpios)
 		OTHERMIRROR+="/home:/m-grant-prg/Raspbian_$obs_rel/ /"
 		if [[ $PBUILDER_OPERATION == create ]]; then
 			APTKEYRINGS=("${APTKEYRINGS[@]}"
-				"/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg")
+				"/usr/share/keyrings/home_m-grant-prg.gpg")
 		fi
 	else
 		debian_basic_setup
 	fi
-	OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.org/debian/ "
+	OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.com/debian/ "
 	OTHERMIRROR+="$REL main"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
-		"/etc/apt/trusted.gpg.d/raspberrypi-keyring.gpg")
+		"/usr/share/keyrings/raspberrypi-archive-keyring.gpg")
 	;;
 ubuntu)
 	MIRRORSITE="$http_prefix/uk.archive.ubuntu.com/ubuntu/"
@@ -181,7 +181,7 @@ ubuntu)
 	OTHERMIRROR+="|deb $http_prefix/ppa.launchpad.net/m-grant-prg/utils/"
 	OTHERMIRROR+="$DIST $REL main"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
-		"/etc/apt/trusted.gpg.d/mgrant-utils-ppa-keyring.gpg")
+		"/usr/share/keyrings/mgrant-utils-ppa-keyring.gpg")
 	;;
 *)
 	printf "Unknown DIST: %s\n" $DIST

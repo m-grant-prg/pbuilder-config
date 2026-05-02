@@ -141,26 +141,9 @@ debian)
 	;;
 rpios)
 	EXTRAPACKAGES+=" mgrant-obs-deb-keyring"
-	# arm64 onwards uses the standard Debian repositories.
-	if [[ $ARCH == "armhf" || $ARCH == "armel" ]]; then
-		MIRRORSITE="$http_prefix/mirrordirector.raspbian.org/raspbian/"
-		COMPONENTS="main contrib non-free rpi"
-		DEBOOTSTRAPOPTS=("${DEBOOTSTRAPOPTS[@]}"
-		   "--keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg")
-		if [[ $OTHERMIRROR != "" ]]; then
-			OTHERMIRROR+="|"
-		fi
-		OTHERMIRROR+="deb http://download.opensuse.org/repositories"
-		OTHERMIRROR+="/home:/m-grant-prg/Raspbian_$obs_rel/ /"
-		if [[ $PBUILDER_OPERATION == create ]]; then
-			APTKEYRINGS=("${APTKEYRINGS[@]}"
-				"/usr/share/keyrings/home_m-grant-prg.gpg")
-		fi
-	else
-		debian_basic_setup
-		OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
-		OTHERMIRROR+="/m-grant-prg/Raspbian_$obs_rel/ /"
-	fi
+	debian_basic_setup
+	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
+	OTHERMIRROR+="/m-grant-prg/Raspbian_$obs_rel/ /"
 	OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.com/debian/ "
 	OTHERMIRROR+="$REL main"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"

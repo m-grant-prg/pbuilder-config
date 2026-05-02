@@ -126,7 +126,7 @@ esac
 ########################################################
 if [[ $APT_CACHER == yes ]]; then
 	OTHERMIRROR="deb http://hermes.mgent.home/aptrepos/$DIST $REL "
-	OTHERMIRROR+="alpha beta stable"
+	OTHERMIRROR+="beta stable"
 	APTKEYRINGS=("/usr/share/keyrings/hermes-keyring.gpg")
 fi
 

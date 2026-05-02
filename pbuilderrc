@@ -69,8 +69,6 @@ debian_basic_setup()
 	OTHERMIRROR+="$REL-security main contrib non-free"
 	OTHERMIRROR+="|deb $https_prefix/deb.debian.org/debian $REL-updates "
 	OTHERMIRROR+="main contrib non-free"
-	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
-	OTHERMIRROR+="/m-grant-prg/Debian_$obs_rel/ /"
 	if [[ $PBUILDER_OPERATION == create ]]; then
 		APTKEYRINGS=("${APTKEYRINGS[@]}"
 			"/usr/share/keyrings/home_m-grant-prg.gpg")
@@ -138,6 +136,8 @@ case $DIST in
 debian)
 	EXTRAPACKAGES+=" mgrant-obs-deb-keyring"
 	debian_basic_setup
+	OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
+	OTHERMIRROR+="/m-grant-prg/Debian_$obs_rel/ /"
 	;;
 rpios)
 	EXTRAPACKAGES+=" mgrant-obs-deb-keyring"
@@ -158,6 +158,8 @@ rpios)
 		fi
 	else
 		debian_basic_setup
+		OTHERMIRROR+="|deb http://download.opensuse.org/repositories/home:"
+		OTHERMIRROR+="/m-grant-prg/Raspbian_$obs_rel/ /"
 	fi
 	OTHERMIRROR+="|deb $http_prefix/archive.raspberrypi.com/debian/ "
 	OTHERMIRROR+="$REL main"

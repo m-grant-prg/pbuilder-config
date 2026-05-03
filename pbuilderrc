@@ -52,8 +52,7 @@ OTHERMIRROR=""
 # Functions #
 #############
 
-# Basic Debian setup which can be used for rpios on arm64 etc which utilise
-# Debian repos.
+# Basic Debian setup which can also be used for rpios.
 # No parameters
 # No return value
 debian_basic_setup()

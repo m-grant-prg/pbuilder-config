@@ -162,8 +162,8 @@ ubuntu)
 	OTHERMIRROR+="|deb $http_prefix/uk.archive.ubuntu.com/ubuntu/ "
 	OTHERMIRROR+="$REL-updates "
 	OTHERMIRROR+="main restricted universe multiverse"
-	OTHERMIRROR+="|deb $http_prefix/ppa.launchpad.net/m-grant-prg/utils/"
-	OTHERMIRROR+="$DIST $REL main"
+	OTHERMIRROR+="|deb $https_prefix/ppa.launchpadcontent.net/m-grant-prg/"
+	OTHERMIRROR+="utils/$DIST $REL main"
 	APTKEYRINGS=("${APTKEYRINGS[@]}"
 		"/usr/share/keyrings/mgrant-utils-ppa-keyring.gpg")
 	;;
